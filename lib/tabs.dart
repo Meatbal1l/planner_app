@@ -11,22 +11,60 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  int _selectedIndex = 0;
-  List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    FinishedPlans(),
-  ];
-  final planned = <PlannerEvent>[];
-  final done = <PlannerEvent>[];
+  final _planned = <PlannerEvent>[];
+  final _done = <PlannerEvent>[];
 
-  void _onItemTap(int index) {
-    _selectedIndex = index;
+  final _biggerFont = TextStyle(fontSize: 20.0);
+
+  int _selectedIndex = 0;
+
+  Map _arguments = {};
+  List<Widget> _widgetOptions = <Widget>[];
+
+  void _onTabsTap(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  void initState() {
+    _arguments = {
+      'planned': _planned,
+      'done': _done,
+      'biggerFont': _biggerFont,
+    };
+    _widgetOptions = <Widget>[
+      HomeScreen(arguments: _arguments),
+      FinishedPlans(arguments: _arguments),
+    ];
+
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _widgetOptions,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.timeline),
+            label: 'planned',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.all_inclusive_rounded),
+            label: 'finished',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onTabsTap,
+        selectedFontSize: 13.0,
+        unselectedFontSize: 13.0,
+      ),
     );
   }
 }

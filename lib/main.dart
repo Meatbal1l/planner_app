@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:planner_app/new_plan.dart';
 import 'package:planner_app/tabs.dart';
@@ -19,7 +17,7 @@ class MyApp extends StatelessWidget {
       ),
       home: TabsScreen(),
       routes: <String, WidgetBuilder> {
-        TabsScreen.routeName: (context) => TabsScreen(); 
+        TabsScreen.routeName: (context) => TabsScreen(),
       },
       onGenerateRoute: (RouteSettings settings){
         var pathObj;
