@@ -92,11 +92,13 @@ class _HomeScreenState extends State<HomeScreen> {
               disabledBorder: InputBorder.none,
             ),
             onEditingComplete: () {
+              FocusScope.of(context).unfocus();
               setState(() {
                 if (event.actionDescription == "") _planned.remove(event);
               });
             },
             onFieldSubmitted: (text) {
+              FocusScope.of(context).unfocus();
               setState(() {
                 if (text == "") _planned.remove(event);
               });

@@ -77,11 +77,13 @@ class _FinishedPlansState extends State<FinishedPlans> {
               disabledBorder: InputBorder.none,
             ),
             onEditingComplete: () {
+              FocusScope.of(context).unfocus();
               setState(() {
                 if (event.actionDescription == "") _done.remove(event);
               });
             },
             onFieldSubmitted: (text) {
+              FocusScope.of(context).unfocus();
               setState(() {
                 if (text == "") _done.remove(event);
               });
