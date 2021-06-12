@@ -21,7 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context)
         .pushNamed(NewPlanScreen.routeName, arguments: _arguments)
         .then((value) {
-      setState(() {});
+      setState(() {
+        _localArgumentsList = List.from(_planned);
+      });
     });
   }
 
@@ -30,9 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _arguments = widget.arguments as Map;
     _done = _arguments['done'];
     _planned = _arguments['planned'];
+    _localArgumentsList = List.from(_planned);
 
-    _localArgumentsList =
-        List.from(Map.from(_arguments)['planned'] as List<PlannerEvent>);
     super.initState();
   }
 
@@ -41,6 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Planned Events"),
+        actions: [
+          IconButton(
+            onPressed: _onAddTap,
+            icon: Icon(Icons.add_circle_outline_rounded),
+          ),
+        ],
       ),
       body: _getPlannedEventsList(),
     );
@@ -50,10 +57,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final allListTiles = _getPlannedTiles();
 
     return ListView.builder(
-      itemCount: 1 + allListTiles.length * 2,
+      itemCount: allListTiles.length,
       itemBuilder: (context, i) {
-        if (i.isOdd) return Divider();
-        final int index = i ~/ 2;
+        // if (i.isOdd) return Divider();
+        // final int index = i ~/ 2;
+        final int index = i;
 
         return allListTiles[index];
       },
@@ -64,18 +72,44 @@ class _HomeScreenState extends State<HomeScreen> {
     final tiles = _localArgumentsList.map((PlannerEvent event) {
       return ListTile(
         title: Transform.translate(
-          child: Text(
-            event.actionDescription,
+          child: TextFormField(
+            initialValue: event.actionDescription,
+            // keyboardType: TextInputType.text,
+            textInputAction: TextInputAction.done,
             style: _arguments['biggerFont'],
+            // minLines: 1,
+            maxLines: null,
+            onChanged: (text) {
+              setState(() {
+                event.actionDescription = text;
+              });
+            },
+            decoration: new InputDecoration(
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+            ),
+            onEditingComplete: () {
+              setState(() {
+                if (event.actionDescription == "") _planned.remove(event);
+              });
+            },
+            onFieldSubmitted: (text) {
+              setState(() {
+                if (text == "") _planned.remove(event);
+              });
+            },
           ),
           offset: Offset(-40, -0),
         ),
         leading: Transform.translate(
           child: IconButton(
             icon: _done.contains(event)
-                ? Icon(Icons.favorite)
-                : Icon(Icons.favorite_border),
-            color: _done.contains(event) ? Colors.red : null,
+                ? Icon(Icons.check_box_outlined)
+                : Icon(Icons.check_box_outline_blank_rounded),
+            color: _done.contains(event) ? Colors.green : null,
             onPressed: () {
               setState(() {
                 if (_done.contains(event)) {

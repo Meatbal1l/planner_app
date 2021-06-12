@@ -14,6 +14,9 @@ class _TabsScreenState extends State<TabsScreen> {
   final _planned = <PlannerEvent>[];
   final _done = <PlannerEvent>[];
 
+  List<PlannerEvent> _savedPlanned = <PlannerEvent>[];
+  List<PlannerEvent> _savedDone = <PlannerEvent>[];
+
   final _biggerFont = TextStyle(fontSize: 20.0);
 
   int _selectedIndex = 0;
@@ -24,6 +27,13 @@ class _TabsScreenState extends State<TabsScreen> {
   void _onTabsTap(int index) {
     setState(() {
       _selectedIndex = index;
+      _savedPlanned = List.from(_planned);
+      _savedDone = List.from(_done);
+
+      _widgetOptions = <Widget>[
+        HomeScreen(arguments: _arguments),
+        FinishedPlans(arguments: _arguments),
+      ];
     });
   }
 
@@ -32,6 +42,8 @@ class _TabsScreenState extends State<TabsScreen> {
     _arguments = {
       'planned': _planned,
       'done': _done,
+      'savedPlanned': _savedPlanned,
+      'savedDone': _savedDone,
       'biggerFont': _biggerFont,
     };
     _widgetOptions = <Widget>[
@@ -45,9 +57,12 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _widgetOptions,
+      // body: IndexedStack(
+      //   index: _selectedIndex,
+      //   children: _widgetOptions,
+      // ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
